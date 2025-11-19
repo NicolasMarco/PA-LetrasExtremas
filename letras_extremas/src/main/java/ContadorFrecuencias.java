@@ -1,60 +1,70 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ContadorFrecuencias {
-    private static final int ALPHABET_SIZE = 26;
-    private int[] frecuencias;
+    private static final int TAM_ALFABETO = 26;
+    private final int[] frecuencias;
 
     public ContadorFrecuencias() {
-        this.frecuencias = new int[ALPHABET_SIZE];
+        this.frecuencias = new int[TAM_ALFABETO];
     }
 
-    public void contarLetraExtrema(String palabra) {
-        if (palabra == null || palabra.isEmpty()) return;
-        contarLetra(palabra.charAt(0));
-        contarLetra(palabra.charAt(palabra.length() - 1));
-    }
-
-    private void contarLetra(char letra) {
-        if (letra >= 'a' && letra <= 'z') {
-            frecuencias[letra - 'a']++;
+    public void contarExtremas(List<String> palabras) {
+        for (String palabra : palabras) {
+            procesarPalabra(palabra);
         }
     }
 
-    public Map<Character, Integer> obtenerFrecuencias() {
-        Map<Character, Integer> resultado = new HashMap<>();
-        for (int i = 0; i < ALPHABET_SIZE; i++) {
-            if (frecuencias[i] > 0) {
-                resultado.put((char)('a' + i), frecuencias[i]);
+    public Set<String> getLetrasConFrecuenciaMaxima() {
+        int max = getFrecuenciaMaxima();
+        Set<String> letras = new HashSet<>();
+
+        for (int i = 0; i < TAM_ALFABETO; i++) {
+            if (frecuencias[i] == max) {
+                char letra = (char) ('a' + i);
+                letras.add(String.valueOf(letra));
             }
         }
+        return letras;
+    }
+
+    public Set<String> getPalabrasConLetrasMaximas(List<String> palabras) {
+        Set<String> resultado = new LinkedHashSet<>();
+        Set<String> letrasMax = getLetrasConFrecuenciaMaxima();
+
+        for (String palabra : palabras) {
+            char primera = palabra.charAt(0);
+            char ultima = palabra.charAt(palabra.length() - 1);
+
+            String p1 = String.valueOf(primera);
+            String p2 = String.valueOf(ultima);
+
+            if (letrasMax.contains(p1) || letrasMax.contains(p2)) {
+                resultado.add(palabra);
+            }
+        }
+
         return resultado;
     }
 
-    public Character obtenerLetraMasFrecuente() {
-        int maxFrecuencia = 0;
-        Character letraMasFrecuente = null;
+    private void procesarPalabra(String palabra) {
+        char primera = palabra.charAt(0);
+        char ultima = palabra.charAt(palabra.length() - 1);
 
-        for (int i = 0; i < ALPHABET_SIZE; i++) {
-            if (frecuencias[i] > maxFrecuencia) {
-                maxFrecuencia = frecuencias[i];
-                letraMasFrecuente = (char)('a' + i);
-            }
-        }
-        return letraMasFrecuente;
+        incrementarFrecuencia(primera);
+        incrementarFrecuencia(ultima);
     }
 
-    public int obtenerFrecuencia(char letra) {
-        if (letra >= 'a' && letra <= 'z') {
-            return frecuencias[letra - 'a'];
-        }
-        return 0;
+    private void incrementarFrecuencia(char c) {
+        frecuencias[c - 'a']++;
     }
 
-    public int getFrecuenciaMaxima() {
+    private int getFrecuenciaMaxima() {
         int max = 0;
-        for (int frec : frecuencias) {
-            if (frec > max) max = frec;
+        for (int f : frecuencias) {
+            if (f > max) max = f;
         }
         return max;
     }

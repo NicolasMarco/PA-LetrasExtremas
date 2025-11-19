@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class AnalizadorPoema {
@@ -20,31 +18,11 @@ public class AnalizadorPoema {
     }
 
     public EstadisticaPoema analizar(List<String> palabras) {
-        for (String palabra : palabras) {
-            contadorFrecuencias.contarLetraExtrema(palabra);
-        }
-
-        Map<Character, Integer> frecuencias = contadorFrecuencias.obtenerFrecuencias();
-        int frecuenciaMaxima = contadorFrecuencias.getFrecuenciaMaxima();
-
-        Set<Character> letrasMaxFrecuencia = new LinkedHashSet<>();
-        for (Map.Entry<Character, Integer> entry : frecuencias.entrySet()) {
-            if (entry.getValue() == frecuenciaMaxima) {
-                letrasMaxFrecuencia.add(entry.getKey());
-            }
-        }
-
-        Set<String> palabrasFiltradas = new LinkedHashSet<>();
-        for (String palabra : palabras) {
-            char letraInicial = palabra.charAt(0);
-            char letraFinal = palabra.charAt(palabra.length() - 1);
-
-            if (letrasMaxFrecuencia.contains(letraInicial) || 
-                letrasMaxFrecuencia.contains(letraFinal)) {
-                palabrasFiltradas.add(palabra);
-            }
-        }
-
+        contadorFrecuencias.contarExtremas(palabras);
+        
+        Set<String> letrasMaxFrecuencia = contadorFrecuencias.getLetrasConFrecuenciaMaxima();
+        Set<String> palabrasFiltradas = contadorFrecuencias.getPalabrasConLetrasMaximas(palabras);
+        
         return new EstadisticaPoema(letrasMaxFrecuencia, palabrasFiltradas);
     }
 }

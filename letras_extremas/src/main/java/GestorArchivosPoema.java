@@ -15,7 +15,11 @@ public class GestorArchivosPoema {
             int cantidadPalabras = Integer.parseInt(br.readLine().trim());
             
             for (int i = 0; i < cantidadPalabras; i++) {
-                String palabra = br.readLine().trim().toLowerCase();
+                String linea = br.readLine();
+                if (linea == null) {
+                    throw new IOException("El archivo tiene menos palabras de las esperadas");
+                }
+                String palabra = linea.trim().toLowerCase();
                 palabras.add(palabra);
             }
         }
@@ -25,7 +29,7 @@ public class GestorArchivosPoema {
     
     public void escribirResultado(String nombreArchivo, EstadisticaPoema estadistica) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))) {
-            for (Character letra : estadistica.getLetrasMaxFrecuencia()) {
+            for (String letra : estadistica.getLetrasMaxFrecuencia()) {
                 bw.write(letra);
             }
             bw.newLine();
